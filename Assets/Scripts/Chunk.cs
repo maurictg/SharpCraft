@@ -44,7 +44,7 @@ public class Chunk
 		chunckObj.name = $"Chunk {X}, {Z} ({Location.x},{Location.z})";
 
 
-		//Fill chunk with furnaces
+		//Fill chunk with basic terrain
 		for (int y = 0; y < WorldData.ChunkHeight; y++)
 			for (int x = 0; x < WorldData.ChunkWidth; x++)
 				for (int z = 0; z < WorldData.ChunkWidth; z++)
@@ -67,15 +67,12 @@ public class Chunk
 		this.world = world;
 
 		//Draw all blocks in the chunk and generate the mesh data
-		DrawChunk();
-		GenerateMesh();
-	}
-
-	private void DrawChunk() {
 		for (int y = 0; y < WorldData.ChunkHeight; y++)
 			for (int x = 0; x < WorldData.ChunkWidth; x++)
 				for (int z = 0; z < WorldData.ChunkWidth; z++)
 					DrawBlock((x,y,z));
+
+		GenerateMesh();
 	}
 
 	private bool IsCovered((int x, int y, int z) pos, int face) {
@@ -106,7 +103,6 @@ public class Chunk
 				if(IsCovered(pos, i))
 					continue;
 					
-
                 vertices.Add(vec + BlockData.vertices[BlockData.triangles[i, 0]]);
                 vertices.Add(vec + BlockData.vertices[BlockData.triangles[i, 1]]);
                 vertices.Add(vec + BlockData.vertices[BlockData.triangles[i, 2]]);
@@ -175,6 +171,6 @@ public class Chunk
 	//External getters/setters
 	public Block GetBlockFromGlobal((int x, int y, int z) pos) {
 		pos = pos.Substract(Location.ToCoordinates());
-		return (IsInChunk(pos)) ? GetBlock(pos) : new Block();
+		return (IsInChunk(pos)) ? GetBlock(pos) : new Block(); //Return air if it doesnt exist
 	}
 }

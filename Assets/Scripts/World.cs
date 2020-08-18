@@ -9,13 +9,10 @@ public class World : MonoBehaviour
     public Material material;
 
     //Data
-    private Chunk[,] chunks;
-    private int chunkCount;
+    private Chunk[,] chunks = new Chunk[WorldData.ChunkCount, WorldData.ChunkCount];
+    private int chunkCount = 0;
 
     private void Start() {
-        this.chunks = new Chunk[WorldData.ChunkCount, WorldData.ChunkCount];
-        this.chunkCount = 0;
-
         //Some logging to measure how long it takes to generate a chunk
         Stopwatch sw = new Stopwatch();
         sw.Start();
@@ -23,7 +20,10 @@ public class World : MonoBehaviour
         //Generate chunks
         for (int x = 0; x < WorldData.ChunkCount; x++)
             for (int z = 0; z < WorldData.ChunkCount; z++)
-                GenerateChunk((x,z));
+            {
+                chunks[x, z] = new Chunk((x, z), this);
+                chunkCount++;
+            }
 
         UnityEngine.Debug.Log($"{chunkCount} chunks generated in {sw.ElapsedMilliseconds} ms. Avg per chunk: {sw.ElapsedMilliseconds/chunkCount} ms.");
         sw.Restart();
@@ -35,11 +35,6 @@ public class World : MonoBehaviour
 
         UnityEngine.Debug.Log($"{chunkCount} chunks rendered in {sw.ElapsedMilliseconds} ms. Avg per chunk: {sw.ElapsedMilliseconds/chunkCount} ms.");
         sw.Stop();
-    }
-
-    private void GenerateChunk((int x, int z) location) {
-        chunks[location.x, location.z] = new Chunk(location, this);
-        chunkCount++;
     }
 
     public Block GetBlock((int x, int y, int z) pos) {

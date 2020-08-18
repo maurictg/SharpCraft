@@ -12,6 +12,7 @@ public static class WorldData
     public static readonly int ChunkCount = 4; //5
     public static readonly int BlockCount = ChunkCount * ChunkWidth;
 
+    //FaceTexture is index in Textures/Blocks.png file
     public static BlockType[] BlockTypes = {
         /* 0 */ new BlockType("Air", null, false),
         /* 1 */ new BlockType("Grass", new FaceTextures(2, 2, 7, 1, 2, 2)),
@@ -21,6 +22,7 @@ public static class WorldData
         /* 5 */ new BlockType("Bedrock", new FaceTextures(9)),
         /* 6 */ new BlockType("Sand", new FaceTextures(10)),
         /* 7 */ new BlockType("Bricks", new FaceTextures(11)),
-        /* 8 */ new BlockType("Furnace", new FaceTextures(12, 13, 15, 15, 13))
+        /* 8 */ new BlockType("Furnace", new FaceTextures(12, 13, 15, 15, 13)),
+        /* 9 */ new BlockType("Unknown", new FaceTextures(0)),
     };
 }

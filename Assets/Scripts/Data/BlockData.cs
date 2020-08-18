@@ -7,7 +7,6 @@ public static class BlockData
 {
 	public static readonly int TextureBlockCnt = 16;
 	public static readonly float TextureSize = 1f / (float)TextureBlockCnt;
-	public enum BlockFace { BACK, FRONT, TOP, BOTTOM, LEFT, RIGHT };
 
     public static readonly Vector3[] vertices = new Vector3[8] {
 		new Vector3(0.0f, 0.0f, 0.0f),
