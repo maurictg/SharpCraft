@@ -5,11 +5,11 @@ using UnityEngine;
 
 public static class WorldData
 {
-    public static readonly int ChunkHeight = 20;
-    public static readonly int ChunkWidth = 10;
+    public static readonly int ChunkHeight = 20; //20
+    public static readonly int ChunkWidth = 10; //10
     
     //World size in chunks
-    public static readonly int ChunkCount = 5;
+    public static readonly int ChunkCount = 4; //5
     public static readonly int BlockCount = ChunkCount * ChunkWidth;
 
     public static BlockType[] BlockTypes = {

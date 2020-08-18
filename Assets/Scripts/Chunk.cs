@@ -28,8 +28,7 @@ public class Chunk
 	public bool Active {get { return chunckObj.activeSelf; } set { chunckObj.SetActive(value); }}
 	public Vector3 Location {get {return chunckObj.transform.position;}}
 
-
-	public Chunk(World world, (int x, int z) location) {
+	public Chunk((int x, int z) location, World world) {
 		this.X = location.x;
 		this.Z = location.z;
 
@@ -61,6 +60,11 @@ public class Chunk
 						SetBlock((x,y,z), BlockData.GetBlockID("Grass"));
 					}
 				}
+	}
+
+	public void Render(World world) {
+		//Update world
+		this.world = world;
 
 		//Draw all blocks in the chunk and generate the mesh data
 		DrawChunk();
@@ -81,11 +85,10 @@ public class Chunk
 		if(IsInChunk(faceCoord) && GetBlock(faceCoord).Type.IsSolid) {
 			return true;
 		} else {
-			//Check if block is in world -> get block in world -> check if solid: yes -> return true;
-			//Not working correctly: try to move one chunk youll see 2 sides are not rendered correctly
 			if(!world.IsChunkInWorld(worldCoord.ToChunkCoordinates()) || !world.IsInWorld(worldCoord))
 				return false;
-
+			
+			//Get block from world
 			return world.GetBlock(worldCoord).Type.IsSolid;
 		}
 	}
@@ -102,6 +105,7 @@ public class Chunk
 				//Check if face is covered
 				if(IsCovered(pos, i))
 					continue;
+					
 
                 vertices.Add(vec + BlockData.vertices[BlockData.triangles[i, 0]]);
                 vertices.Add(vec + BlockData.vertices[BlockData.triangles[i, 1]]);
@@ -158,21 +162,19 @@ public class Chunk
 	}
 
 	//Internal getters/setters
-	private Block GetBlock((int x, int y, int z) pos) 
+	private Block GetBlock((int x, int y, int z) pos)
 		=> blocks[pos.x, pos.y, pos.z];
 
 	private void SetBlock((int x, int y, int z) pos, int blockType = 0)
 		=> blocks[pos.x,pos.y,pos.z] = new Block((byte)blockType);
 
-	public Block GetBlockFromGlobal((int x, int y, int z) pos)
-		=> GetBlock(pos.Substract(Location.ToCoordinates()));
-
-	/* TEST */
-	//Get block from outside chunk (this code will be replaced) => Move this to world.cs in future?
-
-	public bool ContainsBlock(Vector3 pos) => IsInChunk((pos - Location).ToCoordinates());
-	/* END TEST */
-
 	private bool IsInChunk((int x, int y, int z) pos)
 		=> (pos.x >= 0 && pos.x < WorldData.ChunkWidth && pos.y >= 0 && pos.y < WorldData.ChunkHeight && pos.z >= 0 && pos.z < WorldData.ChunkWidth);
+
+
+	//External getters/setters
+	public Block GetBlockFromGlobal((int x, int y, int z) pos) {
+		pos = pos.Substract(Location.ToCoordinates());
+		return (IsInChunk(pos)) ? GetBlock(pos) : new Block();
+	}
 }
