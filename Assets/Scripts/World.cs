@@ -48,5 +48,44 @@ public class World : MonoBehaviour
     public bool IsChunkInWorld((int x, int z) pos)
         => ((pos.x >= 0 && pos.x < WorldData.ChunkCount && pos.z >= 0 && pos.z < WorldData.ChunkCount) && chunks[pos.x, pos.z] != null);
 
+    public Block GenerateBlock((int x, int y, int z) pos) {
+        /* IMMUTABLE PASS */
 
+        Biome biome = WorldData.Biomes[0]; //Default
+
+        // If outside world, return air.
+        if (!IsInWorld(pos))
+            return new Block();
+
+        // If bottom block of chunk, return bedrock.
+        if (pos.y == 0)
+            return new Block(5);
+
+        /* BASIC TERRAIN PASS */
+
+        int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * PerlinNoise.Get2D(new Vector2(pos.x, pos.y), 0, biome.terrainScale)) + biome.groundHeight;
+        int blockId = 0;
+
+        if (pos.y == terrainHeight)
+            blockId = 1;
+        else if (pos.y < terrainHeight && pos.y > terrainHeight - 4)
+            blockId = 3;
+        else if (pos.y > terrainHeight)
+            blockId = 0;
+        else
+            blockId = 2;
+
+        /* SECOND PASS */
+        if(blockId == 2) {
+            foreach (Lode l in biome.lodes)
+            {
+                if (pos.y > l.minHeight && pos.y < l.maxHeight)
+                    if (PerlinNoise.Get3D(pos.ToVector3(), l.noiseOffset, l.scale, l.threshold))
+                        blockId = (int)l.block.BlockType;
+            }
+        }
+
+        return new Block((byte)blockId);
+    }
+        
 }

@@ -48,18 +48,7 @@ public class Chunk
 		for (int y = 0; y < WorldData.ChunkHeight; y++)
 			for (int x = 0; x < WorldData.ChunkWidth; x++)
 				for (int z = 0; z < WorldData.ChunkWidth; z++)
-				{
-					//Basic terrain
-					if(y == 0) {
-						SetBlock((x,y,z), BlockData.GetBlockID("Bedrock"));
-					} else if(y > 0 && y < WorldData.ChunkHeight - 3) {
-						SetBlock((x,y,z), BlockData.GetBlockID("Stone"));
-					} else if(y < WorldData.ChunkHeight - 1) {
-						SetBlock((x,y,z), BlockData.GetBlockID("Dirt"));
-					} else {
-						SetBlock((x,y,z), BlockData.GetBlockID("Grass"));
-					}
-				}
+					SetBlock((x,y,z), world.GenerateBlock((x,y,z).Add(this.Location.ToCoordinates())).BlockType);
 	}
 
 	public void Render(World world) {
